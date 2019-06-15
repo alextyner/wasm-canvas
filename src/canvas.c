@@ -67,7 +67,7 @@ Canvas *createCanvas(char *id)
     c->getHeight = canvas_getHeight;
     c->setHeight = canvas_setHeight;
     c->setWidth = canvas_setWidth;
-
+    // only CanvasRenderingContext2D (labelled '2d') is currently supported
     c->getContext = canvas_getContext;
 
     return c;
@@ -75,12 +75,15 @@ Canvas *createCanvas(char *id)
 
 static Context *createContext(Canvas *canvas, char *contextType)
 {
-    Context *ctx = (Context *)malloc(sizeof(Context));
-    ctx->canvas = canvas;
-    if (strcmp(contextType, "2d") != 0 && strcmp(contextType, "webgl") != 0 && strcmp(contextType, "experimental-webgl") != 0 && strcmp(contextType, "webgl2") != 0 && strcmp(contextType, "bitmaprendered") != 0)
-    { // not a valid context type
+    if (strcmp(contextType, "2d") != 0) // && strcmp(contextType, "webgl") != 0 && strcmp(contextType, "experimental-webgl") != 0 && strcmp(contextType, "webgl2") != 0 && strcmp(contextType, "bitmaprendered") != 0)
+    {
+        // not a valid context type
         return NULL;
     }
+    Context *ctx = (Context *)malloc(sizeof(Context));
+    ctx->canvas = canvas;
+    strcpy(ctx->contextType, contextType); // string field is a static length, no need to allocate
+
     return ctx;
 }
 
