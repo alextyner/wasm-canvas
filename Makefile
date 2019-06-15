@@ -35,10 +35,14 @@ WASM_OPTIONS = \
 dist:
 	cp -f src/canvas.c dist/
 	cp -f src/canvas.h dist/
+	cp -f src/window.c dist/
+	cp -f src/window.h dist/
 
 example-populate-libs:
 	cp -f src/canvas.c $(EXAMPLE_LIB_FOLDER)/
 	cp -f src/canvas.h $(EXAMPLE_LIB_FOLDER)/
+	cp -f src/window.c $(EXAMPLE_LIB_FOLDER)/
+	cp -f src/window.h $(EXAMPLE_LIB_FOLDER)/
 
 example: example-populate-libs
 	emcc $(EXAMPLE_SRCS) -I $(EXAMPLE_LIB_FOLDER)/ $(WASM_OPTIONS) --shell-file $(EXAMPLE_HTML_TEMPLATE) -o $(EXAMPLE_OUTPUT_FOLDER)/index.html
