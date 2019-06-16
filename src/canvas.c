@@ -203,7 +203,7 @@ static void context2d_setFont(CanvasRenderingContext2D *this, char *value)
     },
            this->private.canvas->private.id, value);
 }
-char *context2d_getTextAlign(CanvasRenderingContext2D *this)
+static char *context2d_getTextAlign(CanvasRenderingContext2D *this)
 {
     if (this->private.textAlign)
         free(this->private.textAlign);
