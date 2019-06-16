@@ -8,6 +8,8 @@
 
 static HTMLWindow *current;
 
+// -- HTMLWindow static methods
+
 static int window_getInnerHeight()
 {
     return EM_ASM_INT({
@@ -38,6 +40,8 @@ static void window_blur()
         window.blur();
     });
 }
+
+// -- end HTMLWindow static methods
 
 /**
  * Retrieves the current HTML Window.

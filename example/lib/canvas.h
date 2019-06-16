@@ -10,6 +10,8 @@ typedef struct ContextStruct
 {
     struct CanvasStruct *canvas;
     char contextType[19];
+    char *font;
+    char *fillStyle;
 
     void (*clearRect)(struct ContextStruct *this, int x, int y, int width, int height);
     void (*fillRect)(struct ContextStruct *this, int x, int y, int width, int height);
@@ -24,6 +26,16 @@ typedef struct ContextStruct
     void (*setLineCap)(struct ContextStruct *this, char *type);
     // 0 - BUTT, 1 - ROUND, 2 - SQUARE
     int (*getLineCap)(struct ContextStruct *this);
+    void (*setLineJoin)(struct ContextStruct *this, char *type);
+    // 0 - ROUND, 1 - BEVEL, 2 - MITER
+    int (*getLineJoin)(struct ContextStruct *this);
+    char *(*getFont)(struct ContextStruct *this);
+    void (*setFont)(struct ContextStruct *this, char *value);
+    void (*setTextAlign)(struct ContextStruct *this, char *value);
+    // 0 - START, 1 - END, 2 - LEFT, 3 - RIGHT, 4 - CENTER
+    int (*getTextAlign)(struct ContextStruct *this);
+    void (*setFillStyle)(struct ContextStruct *this, char *value);
+    char *(*getFillStyle)(struct ContextStruct *this);
 
 } CanvasRenderingContext2D;
 
@@ -36,6 +48,7 @@ typedef struct CanvasStruct
     void (*setHeight)(struct CanvasStruct *this, int height);
     void (*setWidth)(struct CanvasStruct *this, int width);
     // only CanvasRenderingContext2D (labelled '2d') is currently supported
+    // behaves like a singleton
     struct ContextStruct *(*getContext)(struct CanvasStruct *this, char *contextType);
 
 } HTMLCanvasElement;

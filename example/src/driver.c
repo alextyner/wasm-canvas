@@ -15,13 +15,30 @@ static void assertEquals(char *testID, int expected, int actual)
     char *msg = (char *)malloc(5 + 1 + strlen(testID) + 1 + 8 + 1);
     strcpy(msg, "Test [");
     strcat(msg, testID);
-    if (expected != actual)
+    if (expected == actual)
     {
-        strcat(msg, "] failed!");
+        strcat(msg, "] passed.");
     }
     else
     {
+        strcat(msg, "] failed!");
+    }
+    log(msg);
+    free(msg);
+}
+
+static void assertStringEquals(char *testID, char *expected, char *actual)
+{
+    char *msg = (char *)malloc(5 + 1 + strlen(testID) + 1 + 8 + 1);
+    strcpy(msg, "Test [");
+    strcat(msg, testID);
+    if (strcmp(expected, actual) == 0)
+    {
         strcat(msg, "] passed.");
+    }
+    else
+    {
+        strcat(msg, "] failed!");
     }
     log(msg);
     free(msg);
@@ -44,7 +61,7 @@ int main(void)
     canvas->setWidth(canvas, 750);
     assertEquals("HTMLCanvas.setWidth()", 750, canvas->getWidth(canvas));
 
-    char buf[32];
+    char buf[128];
     // test Window.getInnerHeight()
     snprintf(buf, 32, "Window().getInnerHeight(): %d", Window()->getInnerHeight());
     log(buf);
@@ -82,6 +99,21 @@ int main(void)
     // test CanvasRenderingContext2D.setLineCap()
     ctx->setLineCap(ctx, "round");
     assertEquals("CanvasRenderingContext2D.setLineCap()", 1, ctx->getLineCap(ctx));
+    // test CanvasRenderingContext2D.getLineJoin()
+    assertEquals("CanvasRenderingContext2D.getLineJoin()", 2, ctx->getLineJoin(ctx));
+    // test CanvasRenderingContext2D.setLineJoin()
+    ctx->setLineJoin(ctx, "bevel");
+    assertEquals("CanvasRenderingContext2D.setLineJoin()", 1, ctx->getLineJoin(ctx));
+    // test CanvasRenderingContext2D.getFont()
+    assertStringEquals("CanvasRenderingContext2D.getFont()", "10px sans-serif", ctx->getFont(ctx));
+    // test CanvasRenderingContext2D.setFont()
+    ctx->setFont(ctx, "bold 48px serif");
+    assertStringEquals("CanvasRenderingContext2D.setFont()", "bold 48px serif", ctx->getFont(ctx));
+    // test CanvasRenderingContext2D.getTextAlign()
+    assertEquals("CanvasRenderingContext2D.getTextAlign()", 0, ctx->getTextAlign(ctx));
+    // test CanvasRenderingContext2D.setTextAlign()
+    ctx->setTextAlign(ctx, "left");
+    assertEquals("CanvasRenderingContext2D.setTextAlign()", 2, ctx->getTextAlign(ctx));
 
     freeCanvas(canvas);
     freeWindow(Window());

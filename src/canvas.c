@@ -11,6 +11,8 @@
 
 static CanvasRenderingContext2D *createContext(HTMLCanvasElement *canvas, char *contextType);
 
+// -- HTMLCanvasElement static methods
+
 static int canvas_getWidth(HTMLCanvasElement *this)
 {
     return EM_ASM_INT({
@@ -51,6 +53,8 @@ static CanvasRenderingContext2D *canvas_getContext(HTMLCanvasElement *this, char
         return this->ctx;
     }
 }
+
+// -- end HTMLCanvasElement static methods
 
 HTMLCanvasElement *createCanvas(char *id)
 {
@@ -154,24 +158,80 @@ static void context2d_setLineCap(CanvasRenderingContext2D *this, char *type)
 static int context2d_getLineCap(CanvasRenderingContext2D *this)
 {
     return EM_ASM_INT({
-        if (document.getElementById(UTF8ToString($0)).getContext('2d').lineCap == 'butt')
-        {
+        var lineCapType = document.getElementById(UTF8ToString($0)).getContext('2d').lineCap;
+        if (lineCapType == 'butt')
             return 0;
-        }
-        else if (document.getElementById(UTF8ToString($0)).getContext('2d').lineCap == 'round')
-        {
+        else if (lineCapType == 'round')
             return 1;
-        }
-        else if (document.getElementById(UTF8ToString($0)).getContext('2d').lineCap == 'square')
-        {
+        else // 'square'
             return 2;
-        }
-        else
-        {
-            return -1;
-        }
     },
                       this->canvas->id);
+}
+static void context2d_setLineJoin(CanvasRenderingContext2D *this, char *type)
+{
+    EM_ASM({
+        document.getElementById(UTF8ToString($0)).getContext('2d').lineJoin = UTF8ToString($1);
+    },
+           this->canvas->id, type);
+}
+static int context2d_getLineJoin(CanvasRenderingContext2D *this)
+{
+    return EM_ASM_INT({
+        var lineJoinType = document.getElementById(UTF8ToString($0)).getContext('2d').lineJoin;
+        if (lineJoinType == 'round')
+            return 0;
+        else if (lineJoinType == 'bevel')
+            return 1;
+        else // 'miter'
+            return 2;
+    },
+                      this->canvas->id);
+}
+static char *context2d_getFont(CanvasRenderingContext2D *this)
+{
+    if (this->font)
+        free(this->font); // this field could be reused, but we won't just in case it changes from the JS side
+    this->font = (char *)EM_ASM_INT({
+        var string = document.getElementById(UTF8ToString($0)).getContext('2d').font;
+        var strlen = lengthBytesUTF8(string) + 1;
+        var strptr = _malloc(strlen);
+        stringToUTF8(string, strptr, strlen);
+        return strptr;
+    },
+                                    this->canvas->id);
+    return this->font;
+}
+static void context2d_setFont(CanvasRenderingContext2D *this, char *value)
+{
+    EM_ASM({
+        document.getElementById(UTF8ToString($0)).getContext('2d').font = UTF8ToString($1);
+    },
+           this->canvas->id, value);
+}
+static int context2d_getTextAlign(CanvasRenderingContext2D *this)
+{
+    return EM_ASM_INT({
+        var textAlignType = document.getElementById(UTF8ToString($0)).getContext('2d').textAlign;
+        if (textAlignType == 'start')
+            return 0;
+        else if (textAlignType == 'end')
+            return 1;
+        else if (textAlignType == 'left')
+            return 2;
+        else if (textAlignType == 'right')
+            return 3;
+        else // 'center'
+            return 4;
+    },
+                      this->canvas->id);
+}
+static void context2d_setTextAlign(CanvasRenderingContext2D *this, char *value)
+{
+    EM_ASM({
+        document.getElementById(UTF8ToString($0)).getContext('2d').textAlign = UTF8ToString($1);
+    },
+           this->canvas->id, value);
 }
 
 // -- end CanvasRenderingContext2D static methods
@@ -186,6 +246,8 @@ static CanvasRenderingContext2D *createContext(HTMLCanvasElement *canvas, char *
     CanvasRenderingContext2D *context2d = (CanvasRenderingContext2D *)malloc(sizeof(CanvasRenderingContext2D));
     context2d->canvas = canvas;
     strcpy(context2d->contextType, contextType); // string field is a static length, no need to allocate
+    context2d->font = NULL;
+    context2d->fillStyle = NULL;
     context2d->clearRect = context2d_clearRect;
     context2d->fillRect = context2d_fillRect;
     context2d->strokeRect = context2d_strokeRect;
@@ -195,13 +257,33 @@ static CanvasRenderingContext2D *createContext(HTMLCanvasElement *canvas, char *
     context2d->getLineWidth = context2d_getLineWidth;
     context2d->setLineCap = context2d_setLineCap;
     context2d->getLineCap = context2d_getLineCap;
+    context2d->setLineJoin = context2d_setLineJoin;
+    context2d->getLineJoin = context2d_getLineJoin;
+    context2d->setFont = context2d_setFont;
+    context2d->getFont = context2d_getFont;
+    context2d->setTextAlign = context2d_setTextAlign;
+    context2d->getTextAlign = context2d_getTextAlign;
 
     return context2d;
 }
 
 void freeCanvas(HTMLCanvasElement *canvas)
 {
-    free(canvas->id);
-    free(canvas->ctx);
-    free(canvas);
+    if (canvas)
+    {
+        free(canvas->id);
+        if (canvas->ctx)
+        {
+            if (canvas->ctx->font)
+            {
+                free(canvas->ctx->font);
+            }
+            if (canvas->ctx->fillStyle)
+            {
+                free(canvas->ctx->fillStyle);
+            }
+            free(canvas->ctx);
+        }
+        free(canvas);
+    }
 }
