@@ -51,7 +51,7 @@ static void window_blur()
  */
 HTMLWindow *Window()
 {
-    if (current == NULL) // field not yet populated
+    if (!current) // field not yet populated
     {
         current = (HTMLWindow *)malloc(sizeof(HTMLWindow));
         current->getInnerHeight = window_getInnerHeight;
@@ -65,6 +65,5 @@ HTMLWindow *Window()
 
 void freeWindow(HTMLWindow *window)
 {
-
     free(window);
 }

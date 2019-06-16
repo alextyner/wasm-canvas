@@ -4,16 +4,16 @@
 #include <emscripten.h>
 #include <stdlib.h>
 
-struct WindowStruct;
+typedef struct WindowStruct HTMLWindow;
 
-typedef struct WindowStruct
+struct WindowStruct
 {
     int (*getInnerHeight)();
     int (*getInnerWidth)();
     int (*getOuterHeight)();
     int (*getOuterWidth)();
     void (*blur)();
-} HTMLWindow;
+};
 
 HTMLWindow *Window();
 

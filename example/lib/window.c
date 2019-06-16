@@ -1,7 +1,8 @@
 /**
  * @file window.c
  * @author Alex Tyner
- * 
+ * Interfaces with the window in which the program is running, 
+ * typically exposed to JavaScript code.
  */
 
 #include "window.h"
