@@ -1,7 +1,7 @@
 EXAMPLE_SRC_FOLDER := example/src
-EXAMPLE_LIB_FOLDER = example/lib
-EXAMPLE_OUTPUT_FOLDER = example/build
-EXAMPLE_HTML_TEMPLATE = example/src/web/index_template.html
+EXAMPLE_LIB_FOLDER := example/lib
+EXAMPLE_OUTPUT_FOLDER := example/build
+EXAMPLE_HTML_TEMPLATE := example/src/web/index_template.html
 EXAMPLE_SRCS := $(shell find $(EXAMPLE_SRC_FOLDER) -name "*.c")
 EXAMPLE_LIBS := $(shell find $(EXAMPLE_LIB_FOLDER) -name "*.c")
 
@@ -32,7 +32,7 @@ WASM_OPTIONS = \
 	-s BINARYEN_TRAP_MODE=\'allow\'
 	#-s 'EXTRA_EXPORTED_RUNTIME_METHODS=["UTF8ToString"]'
 	
-dist:
+dist: dist/*
 	cp -f src/canvas.c dist/
 	cp -f src/canvas.h dist/
 	cp -f src/window.c dist/
