@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <emscripten.h>
+#include <stdlib.h>
 
 struct WindowStruct;
 

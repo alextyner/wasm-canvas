@@ -1,6 +1,8 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#include <stdlib.h>
+#include <string.h>
 #include <emscripten.h>
 
 struct ContextStruct;
@@ -8,10 +10,17 @@ struct CanvasStruct;
 
 typedef struct ContextStruct
 {
-    struct CanvasStruct *canvas;
-    char contextType[19];
-    char *font;
-    char *fillStyle;
+    struct
+    {
+        struct CanvasStruct *canvas;
+        char contextType[19];
+        char *font;
+        char *textAlign;
+        char *fillStyle;
+        char *strokeStyle;
+        char *lineCap;
+        char *lineJoin;
+    } private;
 
     void (*clearRect)(struct ContextStruct *this, int x, int y, int width, int height);
     void (*fillRect)(struct ContextStruct *this, int x, int y, int width, int height);
@@ -25,15 +34,15 @@ typedef struct ContextStruct
     double (*getLineWidth)(struct ContextStruct *this);
     void (*setLineCap)(struct ContextStruct *this, char *type);
     // 0 - BUTT, 1 - ROUND, 2 - SQUARE
-    int (*getLineCap)(struct ContextStruct *this);
+    char *(*getLineCap)(struct ContextStruct *this);
     void (*setLineJoin)(struct ContextStruct *this, char *type);
     // 0 - ROUND, 1 - BEVEL, 2 - MITER
-    int (*getLineJoin)(struct ContextStruct *this);
+    char *(*getLineJoin)(struct ContextStruct *this);
     char *(*getFont)(struct ContextStruct *this);
     void (*setFont)(struct ContextStruct *this, char *value);
     void (*setTextAlign)(struct ContextStruct *this, char *value);
     // 0 - START, 1 - END, 2 - LEFT, 3 - RIGHT, 4 - CENTER
-    int (*getTextAlign)(struct ContextStruct *this);
+    char *(*getTextAlign)(struct ContextStruct *this);
     void (*setFillStyle)(struct ContextStruct *this, char *value);
     char *(*getFillStyle)(struct ContextStruct *this);
 
@@ -41,8 +50,12 @@ typedef struct ContextStruct
 
 typedef struct CanvasStruct
 {
-    struct ContextStruct *ctx;
-    char *id; // dynamically allocated
+    struct
+    {
+        struct ContextStruct *ctx;
+        char *id; // dynamically allocated
+    } private;
+
     int (*getHeight)(struct CanvasStruct *this);
     int (*getWidth)(struct CanvasStruct *this);
     void (*setHeight)(struct CanvasStruct *this, int height);
