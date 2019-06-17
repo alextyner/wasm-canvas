@@ -5,14 +5,50 @@
 #include <string.h>
 #include <emscripten.h>
 
-typedef struct CanvasStruct HTMLCanvasElement;
-typedef struct ContextStruct CanvasRenderingContext2D;
+typedef struct HTMLCanvasElement HTMLCanvasElement;
+typedef struct CanvasRenderingContext2D CanvasRenderingContext2D;
 
-struct ContextStruct
+/**
+ * Struct containing state and OO-like behavior of a CanvasRenderingContext2D structured similarly
+ * to how it would be exposed in JavaScript. This struct should not be instantiated, but rather 
+ * obtained from an HTMLCanvas struct by calling its getContext() function pointer.
+ * 
+ * Function pointers in this struct can be called in an almost identical manner to their JavaScript
+ * equivalents, with a few idiomatic-C quirks. Firstly, every function takes as its first parameter
+ * a pointer to the struct itself. It's hard to access the struct's state within the function otherwise
+ * since we are just simulating OO. Secondly, some function parameters differ slightly from the JS
+ * implementations because we don't have overloading in C. For example, the fillText() function
+ * always expects the optional 'maxWidth' property. That parameter will be ignored if you provide a
+ * negative value, and there are comments written below with that and similar information.
+ * 
+ * You might notice that a lot of functions expect double parameters. That's because most of the
+ * equivalent JavaScript functions will accept doubles. Don't worry, providing int parameters will
+ * work just fine. (int) -> (double) is an implicit conversion in C; no cast required.
+ * 
+ * To summarize, a typical use of this struct might look like the following:
+ * 
+ * HTMLCanvas *canvas = createCanvas("myCanvas");
+ * CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
+ * ctx->setFillStyle(ctx, "#FF0000");
+ * printf("I set the fill style to %s\n", ctx->getFillStyle(ctx));
+ * ctx->fillRect(ctx, 50, 75, 100, 200);
+ * freeCanvas(canvas);
+ * 
+ * Some state is pseudo-encapsulated in the 'private' member struct, such as pointers to dynamically
+ * allocated strings that will need to be freed when the HTMLCanvas is freed. Typically these
+ * are from JavaScript calls, allocated to return them to the user. Alternatively, functions
+ * with canonical string return types could be pigeon-holed into returning enum types, or
+ * we could make the user responsible for buffer allocation and expect an additional by-reference
+ * parameter to copy the string into. The in-JavaScript allocated string would need to be
+ * freed after returning its contents to the user, and the user would not know how large the buffer
+ * should be. So, when a string is exposed to the user, this struct keeps track of the pointers in
+ * order to free them when the HTMLCanvas parent struct is freed.
+ */
+struct CanvasRenderingContext2D
 {
     struct
     {
-        struct CanvasStruct *canvas;
+        HTMLCanvasElement *canvas;
         char contextType[19];
         char *font;
         char *textAlign;
@@ -25,9 +61,9 @@ struct ContextStruct
     void (*clearRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
     void (*fillRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
     void (*strokeRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
-    // maxWidth < 0.0 to ignore parameter
+    /** Provide a maxWidth < 0.0 to ignore the parameter. */
     void (*fillText)(CanvasRenderingContext2D *this, char *text, double x, double y, double maxWidth);
-    // maxWidth < 0.0 to ignore parameter
+    /** Provide a maxWidth < 0.0 to ignore the parameter. */
     void (*strokeText)(CanvasRenderingContext2D *this, char *text, double x, double y, double maxWidth);
     /* TextMetrics *(*measureText)(CanvasRenderingContext2D *this, char *text); */ // that's a whole can of worms
     void (*setLineWidth)(CanvasRenderingContext2D *this, double value);
@@ -74,19 +110,40 @@ struct ContextStruct
     HTMLCanvasElement *(*getCanvas)(CanvasRenderingContext2D *this);
 };
 
-struct CanvasStruct
+/**
+ * Struct containing state and OO-like behavior of an HTML canvas structured similarly
+ * to how it would be exposed in JavaScript. This struct should be instantiated using
+ * the createCanvas() function, and, when you're done using it, should be freed using the
+ * freeCanvas() function.
+ * 
+ * After freeing the canvas struct, the DOM element will still be present and active in
+ * HTML. In the future, it may be possible to reacquire the same canvas as a struct by calling
+ * createCanvas() with the same element id.
+ * 
+ * The real meat of this struct comes with the getContext() function pointer, which creates
+ * a canvas rendering context with drawing capabilities.
+ * 
+ * A typical use of this struct might look like the following:
+ * 
+ * HTMLCanvas *canvas = createCanvas("myCanvas");
+ * canvas->setHeight(canvas, 1080);
+ * canvas->setWidth(canvas, 1920);
+ * CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
+ * ctx->fillRect(ctx, 50, 75, 100, 200);
+ * freeCanvas(canvas);
+ */
+struct HTMLCanvasElement
 {
     struct
     {
-        struct ContextStruct *ctx;
+        CanvasRenderingContext2D *ctx;
         char *id; // dynamically allocated
     } private;
     int (*getHeight)(HTMLCanvasElement *this);
     int (*getWidth)(HTMLCanvasElement *this);
     void (*setHeight)(HTMLCanvasElement *this, int height);
     void (*setWidth)(HTMLCanvasElement *this, int width);
-    // only CanvasRenderingContext2D (labelled '2d') is currently supported
-    // behaves like a singleton
+    /** Only CanvasRenderingContext2D (type '2d') is currently supported. This getter behaves like a singleton. */
     CanvasRenderingContext2D *(*getContext)(HTMLCanvasElement *this, char *contextType);
 };
 

@@ -15,6 +15,13 @@ dist:
 clean:
 	$(MAKE) -C example clean
 
+.PHONY: populate-example-libs
+populate-example-libs:
+	cp -f src/canvas.c example/lib/
+	cp -f src/canvas.h example/lib/
+	cp -f src/window.c example/lib/
+	cp -f src/window.h example/lib/
+
 .PHONY: demo
-demo:
+demo: populate-example-libs
 	$(MAKE) -C example demo

@@ -1,16 +1,13 @@
 /**
- * @file window.c
- * @author Alex Tyner
  * Interfaces with the window in which the program is running, 
  * typically exposed to JavaScript code.
+ * @file window.c
+ * @author Alex Tyner
  */
 
 #include "window.h"
 
-static HTMLWindow *current;
-
-// -- HTMLWindow static methods
-
+/* Begin: HTMLWindow static methods */
 static int window_getInnerHeight()
 {
     return EM_ASM_INT({
@@ -41,17 +38,11 @@ static void window_blur()
         window.blur();
     });
 }
+/* End: HTMLWindow static methods */
 
-// -- end HTMLWindow static methods
-
-/**
- * Retrieves the current HTML Window.
- * Behaves like a singleton -- that is, an HTMLWindow is defined with static linkage and only HTMLWindow one should ever be allocated.
- * Don't forget to call freeWindow() when you're done with the Window. (ex: freeWindow(Window());)
- */
 HTMLWindow *Window()
 {
-    if (!current) // field not yet populated
+    if (!current)
     {
         current = (HTMLWindow *)malloc(sizeof(HTMLWindow));
         current->getInnerHeight = window_getInnerHeight;
