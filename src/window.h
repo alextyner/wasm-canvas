@@ -29,11 +29,11 @@ static HTMLWindow *current;
  * 
  * For example:
  * 
- * HTMLCanvasElement *canvas = createCanvas("bigCanvas"); // not big yet
- * canvas->setHeight(canvas, Window()->getInnerHeight());
- * canvas->setWidth(canvas, Window()->getInnerWidth());
- * freeCanvas(canvas);
- * freeWindow(Window());
+ *     HTMLCanvasElement *canvas = createCanvas("bigCanvas"); // not big yet
+ *     canvas->setHeight(canvas, Window()->getInnerHeight());
+ *     canvas->setWidth(canvas, Window()->getInnerWidth());
+ *     freeCanvas(canvas);
+ *     freeWindow(Window());
  */
 struct HTMLWindow
 {

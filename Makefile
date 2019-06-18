@@ -9,6 +9,12 @@ dist:
 	cp -f src/window.c dist/
 	cp -f src/window.h dist/
 
+.PHONY: docs
+docs: docs/index.html
+
+docs/index.html: src/canvas.h src/window.h
+	cd src && doxygen Doxyfile
+
 # below are targets which delegate to the example project's Makefile
 
 .PHONY: clean
