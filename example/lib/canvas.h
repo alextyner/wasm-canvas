@@ -1,3 +1,9 @@
+/**
+ * Facilitates interaction with HTML5 Canvas elements in a similar
+ * manner to JavaScript, but from C compiled with Emscripten.
+ * @file canvas.h
+ * @author Alex Tyner
+ */
 #ifndef CANVAS_H
 #define CANVAS_H
 
@@ -27,12 +33,12 @@ typedef struct CanvasRenderingContext2D CanvasRenderingContext2D;
  * 
  * To summarize, a typical use of this struct might look like the following:
  * 
- * HTMLCanvas *canvas = createCanvas("myCanvas");
- * CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
- * ctx->setFillStyle(ctx, "#FF0000");
- * printf("I set the fill style to %s\n", ctx->getFillStyle(ctx));
- * ctx->fillRect(ctx, 50, 75, 100, 200);
- * freeCanvas(canvas);
+ *     HTMLCanvas *canvas = createCanvas("myCanvas");
+ *     CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
+ *     ctx->setFillStyle(ctx, "#FF0000");
+ *     printf("I set the fill style to %s\n", ctx->getFillStyle(ctx));
+ *     ctx->fillRect(ctx, 50, 75, 100, 200);
+ *     freeCanvas(canvas);
  * 
  * Some state is pseudo-encapsulated in the 'private' member struct, such as pointers to dynamically
  * allocated strings that will need to be freed when the HTMLCanvas is freed. Typically these
@@ -46,6 +52,11 @@ typedef struct CanvasRenderingContext2D CanvasRenderingContext2D;
  */
 struct CanvasRenderingContext2D
 {
+    /**
+     * This anonymous struct encapsulates fields of the CanvasRenderingContext2D struct
+     * intended to be private. These are primarily pointers to memory allocated from
+     * JavaScript calls so that they can be freed when the canvas is no longer in use.
+     */
     struct
     {
         HTMLCanvasElement *canvas;
@@ -61,9 +72,9 @@ struct CanvasRenderingContext2D
     void (*clearRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
     void (*fillRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
     void (*strokeRect)(CanvasRenderingContext2D *this, double x, double y, double width, double height);
-    /** Provide a maxWidth < 0.0 to ignore the parameter. */
+    /** @param maxWidth optional parameter. provide a value < 0.0 to ignore this parameter. */
     void (*fillText)(CanvasRenderingContext2D *this, char *text, double x, double y, double maxWidth);
-    /** Provide a maxWidth < 0.0 to ignore the parameter. */
+    /** @param maxWidth optional parameter. provide a value < 0.0 to ignore this parameter. */
     void (*strokeText)(CanvasRenderingContext2D *this, char *text, double x, double y, double maxWidth);
     /* TextMetrics *(*measureText)(CanvasRenderingContext2D *this, char *text); */ // that's a whole can of worms
     void (*setLineWidth)(CanvasRenderingContext2D *this, double value);
@@ -125,12 +136,12 @@ struct CanvasRenderingContext2D
  * 
  * A typical use of this struct might look like the following:
  * 
- * HTMLCanvas *canvas = createCanvas("myCanvas");
- * canvas->setHeight(canvas, 1080);
- * canvas->setWidth(canvas, 1920);
- * CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
- * ctx->fillRect(ctx, 50, 75, 100, 200);
- * freeCanvas(canvas);
+ *     HTMLCanvas *canvas = createCanvas("myCanvas");
+ *     canvas->setHeight(canvas, 1080);
+ *     canvas->setWidth(canvas, 1920);
+ *     CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
+ *     ctx->fillRect(ctx, 50, 75, 100, 200);
+ *     freeCanvas(canvas);
  */
 struct HTMLCanvasElement
 {
@@ -139,16 +150,61 @@ struct HTMLCanvasElement
         CanvasRenderingContext2D *ctx;
         char *id; // dynamically allocated
     } private;
+    /** 
+     * Returns a positive integer reflecting the height HTML attribute of the <canvas> element
+     * interpreted in CSS pixels. The canvas height defaults to 150. 
+     */
     int (*getHeight)(HTMLCanvasElement *this);
+    /** 
+     * Returns a positive integer reflecting the width HTML attribute of the <canvas> element
+     * interpreted in CSS pirxels. The canvas width defaults to 300. 
+     */
     int (*getWidth)(HTMLCanvasElement *this);
+    /**
+     * Sets the height HTML attribute of the <canvas> element. If an invalid value is specified,
+     * the default value of 150 is used. 
+     */
     void (*setHeight)(HTMLCanvasElement *this, int height);
+    /**
+     * Sets the width HTML attribute of the <canvas> element. If an invalid value is specified,
+     * the default value of 300 is used. 
+     */
     void (*setWidth)(HTMLCanvasElement *this, int width);
-    /** Only CanvasRenderingContext2D (type '2d') is currently supported. This getter behaves like a singleton. */
+    /** 
+     * Returns a drawing context for the canvas, or null if the context type is not supported.
+     * Use type "2d" (only this type is currently supported) to retrieve a CanvasRenderingContext2D.
+     * 
+     * The field retrieved by this getter function behaves like a singleton. 
+     */
     CanvasRenderingContext2D *(*getContext)(HTMLCanvasElement *this, char *contextType);
 };
 
+/**
+ * Creates a struct containing state and OO-like behavior of an HTML canvas structured
+ * similarly to how it would be exposed in JavaScript. This struct should be instantiated using
+ * the createCanvas() function, and, when you're done using it, should be freed using the
+ * freeCanvas() function.
+ * 
+ * After freeing the canvas struct, the DOM element will still be present and active in
+ * HTML. In the future, it may be possible to reacquire the same canvas as a struct by calling
+ * createCanvas() with the same element id.
+ * 
+ * A typical use of this function might look like the following:
+ * 
+ *     HTMLCanvas *canvas = createCanvas("myCanvas");
+ *     canvas->setHeight(canvas, 1080);
+ *     canvas->setWidth(canvas, 1920);
+ *     CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
+ *     ctx->fillRect(ctx, 50, 75, 100, 200);
+ *     freeCanvas(canvas);
+ */
 HTMLCanvasElement *createCanvas(char *name);
 
+/**
+ * Frees the dynamically allocated HTMLCanvasElement and any dynamically allocated
+ * state as necessary. The DOM canvas element will still exist in HTML after freeing
+ * the struct.
+ */
 void freeCanvas(HTMLCanvasElement *canvas);
 
 #endif

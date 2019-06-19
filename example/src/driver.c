@@ -107,10 +107,12 @@ int main(void)
     ctx->setLineJoin(ctx, "bevel");
     assertStringEquals("CanvasRenderingContext2D.setLineJoin()", "bevel", ctx->getLineJoin(ctx));
     // test CanvasRenderingContext2D.getFont()
-    assertStringEquals("CanvasRenderingContext2D.getFont()", "10px sans-serif", ctx->getFont(ctx));
+    assertStringEquals("Chrome/FF: CanvasRenderingContext2D.getFont()", "10px sans-serif", ctx->getFont(ctx));
+    assertStringEquals("MSEdge: CanvasRenderingContext2D.getFont()", " 10px sans-serif", ctx->getFont(ctx));
     // test CanvasRenderingContext2D.setFont()
-    ctx->setFont(ctx, "bold 48px serif");
-    assertStringEquals("CanvasRenderingContext2D.setFont()", "bold 48px serif", ctx->getFont(ctx));
+    ctx->setFont(ctx, "48px serif");
+    assertStringEquals("Chrome/FF: CanvasRenderingContext2D.setFont()", "48px serif", ctx->getFont(ctx));
+    assertStringEquals("MSEdge: CanvasRenderingContext2D.setFont()", " 48px serif", ctx->getFont(ctx));
     // test CanvasRenderingContext2D.getTextAlign()
     assertStringEquals("CanvasRenderingContext2D.getTextAlign()", "start", ctx->getTextAlign(ctx));
     // test CanvasRenderingContext2D.setTextAlign()

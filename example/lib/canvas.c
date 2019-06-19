@@ -1,8 +1,8 @@
 /**
- * @file canvas.c
- * @author Alex Tyner
  * Facilitates interaction with HTML5 Canvas elements in a similar
  * manner to JavaScript, but from C compiled with Emscripten.
+ * @file canvas.c
+ * @author Alex Tyner
  */
 
 #include "canvas.h"
@@ -468,7 +468,7 @@ static HTMLCanvasElement *context2d_getCanvas(CanvasRenderingContext2D *this)
 static CanvasRenderingContext2D *createContext(HTMLCanvasElement *canvas, char *contextType)
 {
     if (strcmp(contextType, "2d") != 0)
-        return NULL; // not a valid context type; 2d is all I can be bothered with
+        return NULL;
     CanvasRenderingContext2D *ctx = (CanvasRenderingContext2D *)malloc(sizeof(CanvasRenderingContext2D));
     /* Begin: set pseudo-private fields */
     ctx->private.canvas = canvas;

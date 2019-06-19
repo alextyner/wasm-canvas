@@ -11,7 +11,6 @@ HTML_TEMPLATE = src/web/index_template.html
 
 WASMFLAGS = \
 	-O3 \
-	--bind \
 	--memory-init-file 1 \
 	--llvm-lto 3 \
 	--llvm-opts 3 \
@@ -26,6 +25,7 @@ WASMFLAGS = \
 	-s NO_FILESYSTEM=1 \
 	-s DISABLE_EXCEPTION_CATCHING=2 \
 	-s BINARYEN_TRAP_MODE=\'allow\'
+	# --bind \
 	#-s 'EXTRA_EXPORTED_RUNTIME_METHODS=["UTF8ToString"]'
 
 build/index.html: src/driver.o lib/window.o lib/canvas.o
