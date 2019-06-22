@@ -31,3 +31,7 @@ populate-test-libs:
 .PHONY: demo
 demo: populate-test-libs
 	$(MAKE) -C test demo
+
+.PHONY: test
+test: populate-test-libs
+	$(MAKE) -C test build/index.html

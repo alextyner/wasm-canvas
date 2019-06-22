@@ -33,13 +33,13 @@ Currently, this is not a header-only library. Be sure that for each header inclu
 For the Canvas API and drawing context functionality:
 
 ```C
-#include canvas.h
+#include "canvas.h"
 ```
 
 For access to the DOM Window object:
 
 ```C
-#include window.h
+#include "window.h"
 ```
 
 ### Creating a New Canvas
@@ -76,7 +76,7 @@ For a full list of drawing functions available, see the [CanvasRenderingContext2
 
 ### Window()
 
-`#include window.h`
+`#include "window.h"`
 
 The DOM Window object, accessible via the global `window` in JavaScript, provides some useful functionality when used in conjunction with a canvas.
 
@@ -157,6 +157,7 @@ int main(void) {
     ctx->setFont(ctx, "48px serif");
     ctx->fillText(ctx, "Hello World", 0, 150, -1);
     freeCanvas(canvas);
+    return 0;
 }
 ```
 
