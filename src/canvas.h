@@ -186,8 +186,8 @@ struct HTMLCanvasElement
  * freeCanvas() function.
  * 
  * After freeing the canvas struct, the DOM element will still be present and active in
- * HTML. In the future, it may be possible to reacquire the same canvas as a struct by calling
- * createCanvas() with the same element id.
+ * HTML. It is possible to acquire an existing HTML canvas or reacquire a previously freed
+ * canvas by calling createCanvas() with its matching element id.
  * 
  * A typical use of this function might look like the following:
  * 
@@ -197,6 +197,10 @@ struct HTMLCanvasElement
  *     CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d"); // only 2d is supported currently
  *     ctx->fillRect(ctx, 50, 75, 100, 200);
  *     freeCanvas(canvas);
+ *     // I've decided I want that canvas again
+ *     HTMLCanvas *sameOldCanvas = createCanvas("myCanvas");
+ *     int width = sameOldCanvas->getWidth(sameOldCanvas);
+ *     freeCanvas(sameOldCanvas);
  */
 HTMLCanvasElement *createCanvas(char *name);
 
