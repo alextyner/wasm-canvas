@@ -50,7 +50,8 @@ HTMLCanvasElement *createCanvas(char *id)
 {
     EM_ASM(
         {
-            document.body.appendChild(document.createElement("canvas")).setAttribute("id", UTF8ToString($0));
+            if (!document.getElementById(UTF8ToString($0)))
+                document.body.appendChild(document.createElement("canvas")).setAttribute("id", UTF8ToString($0));
         },
         id);
     HTMLCanvasElement *c = (HTMLCanvasElement *)malloc(sizeof(HTMLCanvasElement));
