@@ -6,27 +6,27 @@ This library is intended for use in projects compiled with [Emscripten](https://
 
 ## Purpose
 
-#### Familiarity
+### Familiarity
 
 If you've worked with the Canvas API from JavaScript, the syntax for drawing is simple and friendly, as JavaScript tends to be. 
 
 Although JavaScript excels in readability, it often lacks in optimizability. Web applications with high-performance requirements may turn to WebAssembly compiled from C.
 
-For applications with visual components, interacting with the Canvas API from C feels unfriendly and unfamiliar. This library provides an interface for doing so which closely resembles the syntax used in JavaScript.
+For applications with visual components, interacting with the Canvas API from C feels unfriendly. This library provides an interface for doing so which more closely resembles the syntax used in JavaScript.
 
-#### "Object-Oriented"
+### "Object-Oriented"
 
-This library is written in C, not an object-oriented programming language. However,the design is patterned less like idiomatic C and more like a JavaScript programmer might expect.
+The library is written in C, not an object-oriented programming language. However, the design is patterned less like idiomatic C and more like a JavaScript programmer might expect.
 
-Some C idioms still shine through. With no garbage collector or constructors, `create...` and `free...` functions are provided to allocate, set up, and free the object-like structs. The structs are populated primarily by function pointers to make calls as similar to JavaScript as possible. However, nearly all member functions require a pointer to their parent struct as the first parameter as there is no implicit `this` present in C.
+Some C idioms still shine through. With no garbage collector or constructors, `create...` and `free...` functions are provided to allocate, set up, and free the object-like structs. The structs are populated primarily by function pointers to make calls as similar to JavaScript as possible. Nearly all member functions require a pointer to their parent struct as the first parameter as there is no implicit `this` present in C.
 
-#### Why not C++?
+### Why not C++?
 
 
 
 ## Using the Library
 
-#### Include the Headers
+### Include the Headers
 
 Currently, this is not a header-only library. Be sure that for each header included at compile time you introduce the corresponding source file at link time. See *Hello World* below for an example
 
@@ -42,7 +42,7 @@ For access to the DOM Window object:
 #include window.h
 ```
 
-#### Creating a New Canvas
+### Creating a New Canvas
 
 Use the `createCanvas()` function to insert a new canvas element into the HTML.
 
@@ -50,9 +50,9 @@ Use the `createCanvas()` function to insert a new canvas element into the HTML.
 HTMLCanvasElement *myCanvas = createCanvas("testCanvas");
 ```
 
-A new Canvas element has dimensions 300px x 150px by default.
+A new `<canvas>` element has dimensions 300Wx150H by default.
 
-#### Using an Existing Canvas
+### Using an Existing Canvas
 
 If your HTML already has a canvas element you'd like to bind to...
 
@@ -66,7 +66,15 @@ If your HTML already has a canvas element you'd like to bind to...
 HTMLCanvasElement *myCanvas = createCanvas("someCanvas");
 ```
 
-#### Window()
+### Drawing
+
+Most, but not all of the functions available with the 2D rendering context in JavaScript are available.
+
+Some functionality varies from JavaScript. Setting a field of the rendering context like `font`, for example, can be accomplished with a setter `setFont()` function. There is a corresponding getter `getFont()` function to read from the field.
+
+For a full list of drawing functions available, see the [CanvasRenderingContext2D Struct Reference](https://alextyner.github.io/wasm-canvas/documentation/structCanvasRenderingContext2D.html).
+
+### Window()
 
 `#include window.h`
 
@@ -81,9 +89,11 @@ myCanvas->setWidth(myCanvas, Window()->getInnerWidth());
 
 Note that window functions do not require a pointer to the struct as the first parameter. It is assumed that there is only one window, and you are referring to that one.
 
-#### Cleaning Up
+### Cleaning Up
 
-Some memory is dynamically allocated for each HTMLCanvasElement created. Memory is only allocated for the HTMLWindow if it is used at least once in your program.
+Some memory is dynamically allocated for each `HTMLCanvasElement` created. Memory is only allocated for the `HTMLWindow` if it is used at least once in your program.
+
+Any function return values that needed to be dynamically allocated will also be freed here.
 
 Free the memory for each canvas using `freeCanvas()`.
 
@@ -111,7 +121,7 @@ freeWindow(Window());
 
 ## Examples
 
-#### Hello World
+### Hello World
 
 This is how you might draw something simple, like the text "Hello World" on a new canvas.
 
@@ -142,7 +152,7 @@ file: **hello.c**
 #include "canvas.h"
 
 int main(void) {
-	HTMLCanvasElement *canvas = createCanvas("myCanvas");
+    HTMLCanvasElement *canvas = createCanvas("myCanvas");
     CanvasRenderingContext2D *ctx = canvas->getContext(canvas, "2d");
     ctx->setFont(ctx, "48px serif");
     ctx->fillText(ctx, "Hello World", 0, 150, -1);
@@ -161,7 +171,7 @@ Or, more verbosely:
 
 ```bash
 emcc -Wall canvas.c -o canvas.o
-emcc -Wall hello.c -o hello.o
+emcc -Wall -I canvas.h hello.c -o hello.o
 emcc --shell-file template.html hello.o canvas.o -o build/index.html
 ```
 
