@@ -1,6 +1,7 @@
 /**
  * Facilitates interaction with HTML5 Canvas elements in a similar
  * manner to JavaScript via the DOM, but from C to be compiled with Emscripten.
+ * @brief HTMLCanvasElement and CanvasRenderingContext2D C-DOM-JS-interaction
  * @file canvas.h
  * @author Alex Tyner
  */

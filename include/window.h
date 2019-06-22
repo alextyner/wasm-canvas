@@ -1,6 +1,7 @@
 /**
  * Interfaces with the browser window in which the program is running, 
  * typically exposed to JavaScript code.
+ * @brief HTMLWindow (Window) C-DOM-JS-interaction
  * @file window.h
  * @author Alex Tyner
  */

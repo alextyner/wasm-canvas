@@ -96,9 +96,12 @@ $(document).ready(function(){initNavTree('canvas_8h.html','');});
 <div class="title">canvas.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
+
+<p><a class="el" href="structHTMLCanvasElement.html">HTMLCanvasElement</a> and <a class="el" href="structCanvasRenderingContext2D.html">CanvasRenderingContext2D</a> C-DOM-JS-interaction.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;emscripten.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
-<code>#include &lt;emscripten.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for canvas.h:</div>
 <div class="dyncontent">
@@ -139,8 +142,8 @@ Functions</h2></td></tr>
 <tr class="separator:af5836d2d5968ae657d880aebca783a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Facilitates interaction with HTML5 Canvas elements in a similar manner to JavaScript, but from C compiled with Emscripten.</p>
-<dl class="section author"><dt>Author</dt><dd>Alex Tyner </dd></dl>
+<div class="textblock"><p><a class="el" href="structHTMLCanvasElement.html">HTMLCanvasElement</a> and <a class="el" href="structCanvasRenderingContext2D.html">CanvasRenderingContext2D</a> C-DOM-JS-interaction. </p>
+<p>Facilitates interaction with HTML5 Canvas elements in a similar manner to JavaScript via the DOM, but from C to be compiled with Emscripten. </p><dl class="section author"><dt>Author</dt><dd>Alex Tyner </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="ab735af370fd81da5d6f52069283176ad"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab735af370fd81da5d6f52069283176ad">&#9670;&nbsp;</a></span>createCanvas()</h2>
@@ -158,13 +161,17 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Creates a struct containing state and OO-like behavior of an HTML canvas structured similarly to how it would be exposed in JavaScript. This struct should be instantiated using the <a class="el" href="canvas_8h.html#ab735af370fd81da5d6f52069283176ad">createCanvas()</a> function, and, when you're done using it, should be freed using the <a class="el" href="canvas_8h.html#af5836d2d5968ae657d880aebca783a81">freeCanvas()</a> function.</p>
-<p>After freeing the canvas struct, the DOM element will still be present and active in HTML. In the future, it may be possible to reacquire the same canvas as a struct by calling <a class="el" href="canvas_8h.html#ab735af370fd81da5d6f52069283176ad">createCanvas()</a> with the same element id.</p>
+<p>After freeing the canvas struct, the DOM element will still be present and active in HTML. It is possible to acquire an existing HTML canvas or reacquire a previously freed canvas by calling <a class="el" href="canvas_8h.html#ab735af370fd81da5d6f52069283176ad">createCanvas()</a> with its matching element id.</p>
 <p>A typical use of this function might look like the following: </p><pre class="fragment">HTMLCanvas *canvas = createCanvas("myCanvas");
 canvas-&gt;setHeight(canvas, 1080);
 canvas-&gt;setWidth(canvas, 1920);
 CanvasRenderingContext2D *ctx = canvas-&gt;getContext(canvas, "2d"); // only 2d is supported currently
 ctx-&gt;fillRect(ctx, 50, 75, 100, 200);
-freeCanvas(canvas);</pre> 
+freeCanvas(canvas);
+// I've decided I want that canvas again
+HTMLCanvas *sameOldCanvas = createCanvas("myCanvas");
+int width = sameOldCanvas-&gt;getWidth(sameOldCanvas);
+freeCanvas(sameOldCanvas);</pre> 
 </div>
 </div>
 <a id="af5836d2d5968ae657d880aebca783a81"></a>
