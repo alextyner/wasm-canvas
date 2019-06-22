@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/alextyner/wasm-canvas.svg?branch=master)](https://travis-ci.com/alextyner/wasm-canvas)
+
 # wasm-canvas
 
 wasm-canvas is a **C99-compliant** layer of abstraction for interacting with the **HTML Canvas API**. 
@@ -22,7 +24,7 @@ Some C idioms still shine through. With no garbage collector or constructors, `c
 
 ### Why not C++?
 
-
+There are a lot of reasons.
 
 ## Using the Library
 
