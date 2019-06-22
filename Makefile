@@ -4,10 +4,10 @@ all: dist demo
 
 .PHONY: dist
 dist:
-	cp -f src/canvas.c dist/
-	cp -f src/canvas.h dist/
-	cp -f src/window.c dist/
-	cp -f src/window.h dist/
+	cp -f src/canvas.c include/
+	cp -f src/canvas.h include/
+	cp -f src/window.c include/
+	cp -f src/window.h include/
 
 .PHONY: docs
 docs: docs/index.html
