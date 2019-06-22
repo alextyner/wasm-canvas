@@ -1,4 +1,4 @@
-CC = emcc # if emcc is not in your PATH, you might consider making this an absolute path to your emcc
+CC = emcc
 CFLAGS = \
 	-O3 \
 	-Wall \

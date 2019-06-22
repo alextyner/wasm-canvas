@@ -1,15 +1,15 @@
 /**
  * Facilitates interaction with HTML5 Canvas elements in a similar
- * manner to JavaScript, but from C compiled with Emscripten.
+ * manner to JavaScript via the DOM, but from C to be compiled with Emscripten.
  * @file canvas.h
  * @author Alex Tyner
  */
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include <stdlib.h>
-#include <string.h>
 #include <emscripten.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef struct HTMLCanvasElement HTMLCanvasElement;
 typedef struct CanvasRenderingContext2D CanvasRenderingContext2D;
@@ -148,7 +148,7 @@ struct HTMLCanvasElement
     struct
     {
         CanvasRenderingContext2D *ctx;
-        char *id; // dynamically allocated
+        char *id;
     } private;
     /** 
      * Returns a positive integer reflecting the height HTML attribute of the <canvas> element

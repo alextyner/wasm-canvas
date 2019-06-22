@@ -12,22 +12,22 @@ dist:
 .PHONY: docs
 docs: docs/index.html
 
-docs/index.html: src/canvas.h src/window.h
+docs/index.html: dist src/canvas.h src/window.h
 	cd src && doxygen Doxyfile
 
-# below are targets which delegate to the example project's Makefile
+# below are targets which delegate to the test project's Makefile
 
 .PHONY: clean
 clean:
-	$(MAKE) -C example clean
+	$(MAKE) -C test clean
 
-.PHONY: populate-example-libs
-populate-example-libs:
-	cp -f src/canvas.c example/lib/
-	cp -f src/canvas.h example/lib/
-	cp -f src/window.c example/lib/
-	cp -f src/window.h example/lib/
+.PHONY: populate-test-libs
+populate-test-libs:
+	cp -f src/canvas.c test/lib/
+	cp -f src/canvas.h test/lib/
+	cp -f src/window.c test/lib/
+	cp -f src/window.h test/lib/
 
 .PHONY: demo
-demo: populate-example-libs
-	$(MAKE) -C example demo
+demo: populate-test-libs
+	$(MAKE) -C test demo

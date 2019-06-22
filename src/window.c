@@ -1,5 +1,5 @@
 /**
- * Interfaces with the window in which the program is running, 
+ * Interfaces with the browser window in which the program is running, 
  * typically exposed to JavaScript code.
  * @file window.c
  * @author Alex Tyner

@@ -1,5 +1,5 @@
 /**
- * Interfaces with the window in which the program is running, 
+ * Interfaces with the browser window in which the program is running, 
  * typically exposed to JavaScript code.
  * @file window.h
  * @author Alex Tyner
@@ -12,7 +12,7 @@
 
 typedef struct HTMLWindow HTMLWindow;
 
-/** The active HTMLWindow. Field facilitates the Singleton design pattern. */
+/** The active HTMLWindow. This field facilitates the Singleton design pattern. */
 static HTMLWindow *current;
 
 /**

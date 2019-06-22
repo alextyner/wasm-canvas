@@ -1,6 +1,6 @@
 /**
  * Facilitates interaction with HTML5 Canvas elements in a similar
- * manner to JavaScript, but from C compiled with Emscripten.
+ * manner to JavaScript via the DOM, but from C to be compiled with Emscripten.
  * @file canvas.c
  * @author Alex Tyner
  */
