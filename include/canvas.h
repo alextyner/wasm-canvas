@@ -158,7 +158,7 @@ struct HTMLCanvasElement
     int (*getHeight)(HTMLCanvasElement *this);
     /** 
      * Returns a positive integer reflecting the width HTML attribute of the <canvas> element
-     * interpreted in CSS pirxels. The canvas width defaults to 300. 
+     * interpreted in CSS pixels. The canvas width defaults to 300. 
      */
     int (*getWidth)(HTMLCanvasElement *this);
     /**
